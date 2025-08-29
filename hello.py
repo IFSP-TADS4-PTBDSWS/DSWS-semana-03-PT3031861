@@ -1,37 +1,25 @@
 # A very simple Flask Hello World app for you to get started with...
-from flask import Flask
-from flask import request
+from flask import Flask, render_template
+from flask_bootstrap import Bootstrap
+from flask_moment import Moment
+from datetime import datetime
 
 app = Flask(__name__)
-@app.route('/')
-def hello_world():
-    return '''
-    <h1>Avaliação contínua: Aula 030</h1>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/user/Julia%20Vilela/PT3031861/IFSP">Identificação</a></li>
-        <li><a href="/contextorequisicao">Contexto de requisição</a></li>
-    </ul>
-    '''
+bootstrap = Bootstrap(app)
+moment = Moment(app)
 
-@app.route('/user/<name>/<pt>/<inst>')
-def user(name, pt, inst):
-    return f'''
-    <h1>Avaliação contínua: Aula 030</h1>
-    <h2>Aluno: {name}</h2>
-    <h2>Prontuário: {pt}</h2>
-    <h2>Instituição: {inst}</h2>
-    '''
 
-@app.route('/contextorequisicao')
-def req():
-    user_agent = request.headers.get('User-Agent') # informação que o servidor pega para saber do navegador e so
-    ip = request.remote_addr
-    host = request.host
-    return f'''
-    <h1>Avaliação contínua: Aula 030</h1>
-    <h2>Seu navegador é: {user_agent}</h2>
-    <h2>O IP do computador remoto é: {ip}</h2>
-    <h2>O host da aplicação é: {host}</h2>
-    '''
+@app.route("/")
+def home():
+    return render_template('index.html', current_time=datetime.utcnow())
+
+@app.route('/user/<username>')
+def user_profile(username):
+    return render_template('user.html', name=username)
+
+@app.route('/rotainexistente')
+def not_found_route():
+    return render_template('404.html'), 404
+
+
 
